@@ -174,6 +174,65 @@ export type Database = {
           },
         ]
       }
+      saved_transitions: {
+        Row: {
+          analysis_run_id: string
+          candidate_track_id: string
+          created_at: string
+          direction_id: string
+          explanation: string
+          facts_snapshot: Json
+          id: string
+          rank_at_save: number
+          reference_track_id: string | null
+          rules_version_at_save: string
+          score: number
+          score_breakdown_snapshot: Json
+          user_id: string
+          user_note: string | null
+        }
+        Insert: {
+          analysis_run_id: string
+          candidate_track_id: string
+          created_at?: string
+          direction_id: string
+          explanation?: string
+          facts_snapshot?: Json
+          id?: string
+          rank_at_save: number
+          reference_track_id?: string | null
+          rules_version_at_save?: string
+          score: number
+          score_breakdown_snapshot?: Json
+          user_id: string
+          user_note?: string | null
+        }
+        Update: {
+          analysis_run_id?: string
+          candidate_track_id?: string
+          created_at?: string
+          direction_id?: string
+          explanation?: string
+          facts_snapshot?: Json
+          id?: string
+          rank_at_save?: number
+          reference_track_id?: string | null
+          rules_version_at_save?: string
+          score?: number
+          score_breakdown_snapshot?: Json
+          user_id?: string
+          user_note?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_transitions_analysis_run_id_fkey"
+            columns: ["analysis_run_id"]
+            isOneToOne: false
+            referencedRelation: "analysis_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crate_tracks: {
         Row: {
           added_at: string

@@ -5,6 +5,15 @@ import { usePathname } from "next/navigation";
 import { APP_NAV_ITEMS } from "@/lib/config/nav";
 import { cn } from "@/lib/utils/class-names";
 
+function navItemActive(pathname: string, href: string): boolean {
+  if (pathname === href) return true;
+  if (!pathname.startsWith(`${href}/`)) return false;
+  if (href === "/recommendations") {
+    return !pathname.startsWith("/recommendations/saved");
+  }
+  return true;
+}
+
 export function Sidebar() {
   const pathname = usePathname();
 
@@ -22,17 +31,17 @@ export function Sidebar() {
       </div>
       <nav className="flex flex-1 flex-col gap-0.5 p-3" aria-label="App">
         {APP_NAV_ITEMS.map((item) => {
-          const active =
-            pathname === item.href || pathname.startsWith(`${item.href}/`);
+          const active = navItemActive(pathname, item.href);
           return (
             <Link
               key={item.href}
               href={item.href}
+              aria-current={active ? "page" : undefined}
               className={cn(
                 "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 active
-                  ? "bg-zinc-800/90 text-zinc-50"
-                  : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200",
+                  ? "border border-violet-500/20 bg-violet-950/40 text-zinc-50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)]"
+                  : "border border-transparent text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200",
               )}
             >
               {item.label}

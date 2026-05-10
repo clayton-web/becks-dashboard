@@ -109,11 +109,34 @@ export async function fetchSpotifyMeProfile(accessToken: string): Promise<Spotif
   return (await res.json()) as SpotifyMeResponse;
 }
 
-/**
- * Stub for rotating access tokens via `refresh_token` — implement alongside playlist/import jobs.
- */
-export async function refreshSpotifyAccessToken(): Promise<SpotifyTokenResponse> {
-  throw new Error("[spotify] refreshSpotifyAccessToken is deferred to import/refresh pipelines.");
+/** Spotify may omit `refresh_token` on refresh — keep the previous refresh token when absent. */
+export async function refreshSpotifyAccessToken(
+  env: SpotifyServerEnv,
+  refreshToken: string,
+): Promise<SpotifyTokenResponse> {
+  const body = new URLSearchParams({
+    grant_type: "refresh_token",
+    refresh_token: refreshToken,
+    client_id: env.clientId,
+    client_secret: env.clientSecret,
+  });
+
+  const res = await fetch(SPOTIFY_TOKEN_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: body.toString(),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(
+      `[spotify] token refresh failed (${res.status}): ${text.slice(0, 260)}`,
+    );
+  }
+
+  return (await res.json()) as SpotifyTokenResponse;
 }
 
 export function spotifyExpiryIsoFromNow(expiresInSeconds: number): string {

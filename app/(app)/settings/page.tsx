@@ -40,6 +40,18 @@ export default async function SettingsPage({ searchParams }: PageProps) {
           Connections, quotas, deterministic defaults, and append-only AI
           consent consolidate here alongside external integrations.
         </p>
+        <p className="mt-3 text-sm">
+          <Link
+            href="/settings/diagnostics"
+            className="font-medium text-violet-400 hover:text-violet-300"
+          >
+            Deployment checklist
+          </Link>
+          <span className="text-zinc-500">
+            {" "}
+            — verify Vercel env vars and OAuth redirect (no secrets displayed).
+          </span>
+        </p>
       </header>
 
       {flash === "connected" ? (

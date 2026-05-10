@@ -7,6 +7,7 @@ export const APP_PROTECTED_PATH_PREFIXES = [
   "/library",
   "/crates",
   "/analysis",
+  "/recommendations",
   "/settings",
 ] as const;
 
