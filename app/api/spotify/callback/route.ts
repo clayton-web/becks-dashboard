@@ -9,6 +9,7 @@ import {
   spotifyExpiryIsoFromNow,
 } from "@/lib/spotify/oauth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseServiceRoleClient } from "@/lib/supabase/service-role";
 
 function redirectFailure(
   request: NextRequest,
@@ -63,6 +64,13 @@ export async function GET(request: NextRequest) {
     return redirectFailure(request, "session_required");
   }
 
+  let admin;
+  try {
+    admin = createSupabaseServiceRoleClient();
+  } catch {
+    return redirectFailure(request, "service_role_key_missing");
+  }
+
   try {
     const tokens = await exchangeSpotifyAuthorizationCode(envConfig, code);
     if (!tokens.refresh_token) {
@@ -73,7 +81,7 @@ export async function GET(request: NextRequest) {
 
     const expiresAt = spotifyExpiryIsoFromNow(tokens.expires_in);
 
-    const { error: upsertError } = await supabase.from("spotify_connections").upsert(
+    const { error: upsertError } = await admin.from("spotify_connections").upsert(
       {
         user_id: user.id,
         spotify_user_id: profile.id,
